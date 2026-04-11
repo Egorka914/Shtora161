@@ -1,0 +1,333 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #fcfcfc;
+            color: #414141;
+            overflow-x: hidden;
+            cursor: none;
+        }
+        
+        /* Анимация открытия штор */
+        .curtain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            display: flex;
+            pointer-events: none;
+        }
+        .curtain-panel {
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, #2a241e 0%, #1a1510 100%);
+            position: relative;
+            overflow: hidden;
+            transition: transform 1.8s cubic-bezier(0.77, 0, 0.18, 1);
+            z-index: 10001;
+        }
+        .curtain-panel.left { transform: translateX(0); }
+        .curtain-panel.right { transform: translateX(0); }
+        .curtain-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(90deg, rgba(158,138,127,0.1) 0px, rgba(158,138,127,0.1) 2px, transparent 2px, transparent 8px);
+            pointer-events: none;
+        }
+        .curtain-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #9e8a7f;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .curtain-panel.left .curtain-text { transform: translate(-50%, -50%) rotate(-90deg); }
+        .curtain-panel.right .curtain-text { transform: translate(-50%, -50%) rotate(90deg); }
+        
+        /* Кастомный курсор */
+        .custom-cursor {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #9e8a7f;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s ease, height 0.2s ease, background 0.2s ease;
+            background: rgba(158, 138, 127, 0.1);
+            box-shadow: 0 0 12px rgba(158, 138, 127, 0.4);
+            will-change: transform;
+        }
+        .cursor-dot {
+            width: 4px;
+            height: 4px;
+            background: #9e8a7f;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            will-change: transform;
+        }
+        a, button, .btn, .card-flip, .swiper-slide, .faq-q, .glass-btn { cursor: none; }
+        
+        /* Flip карточки */
+        .flip-container {
+            background-color: transparent;
+            width: 100%;
+            height: 420px;
+            perspective: 1000px;
+        }
+        .card-flip {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transform-style: preserve-3d;
+            border-radius: 32px;
+        }
+        .flip-container:hover .card-flip { transform: rotateY(180deg); }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 32px;
+            overflow: hidden;
+        }
+        .card-front {
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .card-front .front-overlay {
+            background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+            width: 100%;
+            padding: 30px 20px 20px;
+            color: white;
+        }
+        .card-front h3 { color: white; margin-bottom: 8px; }
+        .card-back {
+            background: #9e8a7f;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 32px;
+            text-align: center;
+        }
+        .card-back h4 { color: white; margin-bottom: 16px; }
+        .card-back p { color: #f5f0eb; margin-bottom: 20px; }
+        .btn-detail {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.5);
+            padding: 8px 24px;
+            border-radius: 40px;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-block;
+        }
+        .btn-detail:hover { background: white; color: #9e8a7f; }
+        
+        .premium-card {
+            background: white;
+            border: 1px solid #dedede;
+            border-radius: 32px;
+            padding: 40px 28px;
+            transition: all 0.5s;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .premium-card:hover {
+            transform: translateY(-15px);
+            border-color: #9e8a7f;
+            box-shadow: 0 25px 45px -12px rgba(158,138,127,0.3);
+        }
+        .premium-card i { font-size: 3rem; color: #9e8a7f; margin-bottom: 20px; }
+        .premium-card h3 { color: black; margin-bottom: 12px; }
+        .stat-number { font-size: 2.5rem; font-weight: 800; color: #9e8a7f; margin-top: 16px; }
+        
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 9990;
+            padding: 1.2rem 0;
+            transition: 0.4s;
+            background: transparent;
+        }
+        .navbar.scrolled {
+            background: rgba(252,252,252,0.98);
+            backdrop-filter: blur(12px);
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #dedede;
+        }
+        .navbar-brand { font-size: 1.6rem; font-weight: 700; color: black; }
+        .navbar-brand span { color: #9e8a7f; }
+        .nav-link { color: #414141; font-weight: 500; margin: 0 0.5rem; position: relative; }
+        .nav-link:hover { color: #9e8a7f; }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #9e8a7f;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after { width: 100%; }
+        
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fcfcfc 0%, #f5f2ef 100%);
+            padding-top: 80px;
+            display: flex;
+            align-items: center;
+        }
+        .hero h1 { font-size: 5.5rem; font-weight: 800; color: black; }
+        .gold-text { color: #9e8a7f; }
+        .btn-cyber {
+            background: #414141;
+            border: none;
+            padding: 16px 48px;
+            font-weight: 600;
+            border-radius: 60px;
+            color: white;
+            transition: 0.4s;
+        }
+        .btn-cyber:hover { transform: scale(1.05); background: #9e8a7f; }
+        
+        .swiper { width: 100%; padding: 50px 0 70px; }
+        .swiper-slide { width: 320px; height: 450px; border-radius: 32px; overflow: hidden; border: 1px solid #dedede; }
+        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .swiper-slide-active { transform: scale(1.05); border-color: #9e8a7f; }
+        
+        .step-card {
+            background: white;
+            border-radius: 28px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid #dedede;
+            transition: 0.4s;
+            height: 100%;
+        }
+        .step-card:hover { transform: translateY(-10px); border-color: #9e8a7f; }
+        .step-card .display-1 { color: #9e8a7f; font-size: 3rem; font-weight: 800; }
+        
+        .neon-form {
+            background: white;
+            border-radius: 48px;
+            border: 1px solid #dedede;
+            padding: 50px;
+        }
+        input, textarea {
+            background: #fcfcfc;
+            border: 1px solid #dedede;
+            border-radius: 60px;
+            padding: 15px 25px;
+            color: #414141;
+            width: 100%;
+            transition: 0.3s;
+        }
+        textarea { border-radius: 32px; resize: vertical; }
+        input:focus, textarea:focus { outline: none; border-color: #9e8a7f; }
+        
+        .review-card {
+            background: white;
+            padding: 32px;
+            border-radius: 32px;
+            border: 1px solid #dedede;
+            height: 100%;
+        }
+        .faq-glow {
+            background: white;
+            border-radius: 28px;
+            margin-bottom: 20px;
+            border: 1px solid #dedede;
+            overflow: hidden;
+        }
+        .floating-menu {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .glass-btn {
+            background: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            border: 1px solid #dedede;
+            transition: 0.3s;
+            color: #9e8a7f;
+        }
+        .glass-btn:hover { transform: scale(1.1); background: #9e8a7f; color: white; }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .neon-form { padding: 30px; }
+            .custom-cursor, .cursor-dot { display: none; }
+            body, a, button { cursor: auto; }
+            .flip-container { height: 380px; }
+        }
+        
+        footer {
+            border-top: 1px solid #dedede;
+            padding: 40px 0;
+            text-align: center;
+            background: #fcfcfc;
+        }
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 50px;
+            color: black;
+        }
+        @media (max-width: 576px) { .section-title { font-size: 2rem; } }
+        
+        /* Уведомление */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #9e8a7f;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 60px;
+            z-index: 10001;
+            opacity: 0;
+            transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            pointer-events: none;
+            font-weight: 500;
+        }
+        .toast-notification.show { transform: translateX(-50%) translateY(0); opacity: 1; }
