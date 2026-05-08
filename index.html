@@ -31,7 +31,7 @@
     <!-- EmailJS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     
-    <style>
+      <style>
         * {
             margin: 0;
             padding: 0;
@@ -42,6 +42,13 @@
             background-color: #fcfcfc;
             color: #414141;
             overflow-x: hidden;
+        }
+        
+        /* ========== ЦВЕТ СВЕЖЕЙ ТРАВЫ (АКЦЕНТЫ) ========== */
+        :root {
+            --grass: #7CB342;
+            --grass-dark: #558B2F;
+            --grass-light: #AED581;
         }
         
         /* Анимация открытия штор */
@@ -73,7 +80,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(90deg, rgba(158,138,127,0.1) 0px, rgba(158,138,127,0.1) 2px, transparent 2px, transparent 8px);
+            background: repeating-linear-gradient(90deg, rgba(124,179,66,0.08) 0px, rgba(124,179,66,0.08) 2px, transparent 2px, transparent 8px);
             pointer-events: none;
         }
         .curtain-text {
@@ -91,7 +98,7 @@
         .curtain-panel.right .curtain-text { transform: translate(-50%, -50%) rotate(90deg); }
         
         /* Кастомный курсор (только для десктопа) */
-        @media (min-width: 1024px) {
+       @media (min-width: 1024px) {
             .custom-cursor {
                 width: 28px;
                 height: 28px;
@@ -119,6 +126,7 @@
             }
             body, a, button, .btn, .card-flip, .swiper-slide, .faq-q, .glass-btn { cursor: none; }
         }
+        
         /* Flip карточки */
         .flip-container {
             background-color: transparent;
@@ -159,7 +167,7 @@
         }
         .card-front h3 { color: white; margin-bottom: 8px; }
         .card-back {
-            background: #9e8a7f;
+            background: var(--grass);
             transform: rotateY(180deg);
             display: flex;
             flex-direction: column;
@@ -179,7 +187,7 @@
             transition: 0.3s;
             display: inline-block;
         }
-        .btn-detail:hover { background: white; color: #9e8a7f; }
+        .btn-detail:hover { background: white; color: var(--grass); }
         
         .premium-card {
             background: white;
@@ -193,12 +201,12 @@
         }
         .premium-card:hover {
             transform: translateY(-15px);
-            border-color: #9e8a7f;
-            box-shadow: 0 25px 45px -12px rgba(158,138,127,0.3);
+            border-color: var(--grass);
+            box-shadow: 0 25px 45px -12px rgba(124,179,66,0.3);
         }
-        .premium-card i { font-size: 3rem; color: #9e8a7f; margin-bottom: 20px; }
+        .premium-card i { font-size: 3rem; color: var(--grass); margin-bottom: 20px; }
         .premium-card h3 { color: black; margin-bottom: 12px; }
-        .stat-number { font-size: 2.5rem; font-weight: 800; color: #9e8a7f; margin-top: 16px; }
+        .stat-number { font-size: 2.5rem; font-weight: 800; color: var(--grass); margin-top: 16px; }
         
         .navbar {
             position: fixed;
@@ -216,9 +224,9 @@
             border-bottom: 1px solid #dedede;
         }
         .navbar-brand { font-size: 1.6rem; font-weight: 700; color: black; }
-        .navbar-brand span { color: #9e8a7f; }
+        .navbar-brand span { color: var(--grass); }
         .nav-link { color: #414141; font-weight: 500; margin: 0 0.5rem; position: relative; }
-        .nav-link:hover { color: #9e8a7f; }
+        .nav-link:hover { color: var(--grass); }
         .nav-link::after {
             content: '';
             position: absolute;
@@ -226,7 +234,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: #9e8a7f;
+            background: var(--grass);
             transition: width 0.3s;
         }
         .nav-link:hover::after { width: 100%; }
@@ -239,7 +247,7 @@
             align-items: center;
         }
         .hero h1 { font-size: 5.5rem; font-weight: 800; color: black; }
-        .gold-text { color: #9e8a7f; }
+        .gold-text { color: var(--grass); }
         .btn-cyber {
             background: #414141;
             border: none;
@@ -249,12 +257,12 @@
             color: white;
             transition: 0.4s;
         }
-        .btn-cyber:hover { transform: scale(1.05); background: #9e8a7f; }
+        .btn-cyber:hover { transform: scale(1.05); background: var(--grass); box-shadow: 0 10px 25px rgba(124,179,66,0.3); }
         
         .swiper { width: 100%; padding: 50px 0 70px; }
         .swiper-slide { width: 320px; height: 450px; border-radius: 32px; overflow: hidden; border: 1px solid #dedede; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
-        .swiper-slide-active { transform: scale(1.05); border-color: #9e8a7f; }
+        .swiper-slide-active { transform: scale(1.05); border-color: var(--grass); }
         
         .step-card {
             background: white;
@@ -265,8 +273,8 @@
             transition: 0.4s;
             height: 100%;
         }
-        .step-card:hover { transform: translateY(-10px); border-color: #9e8a7f; }
-        .step-card .display-1 { color: #9e8a7f; font-size: 3rem; font-weight: 800; }
+        .step-card:hover { transform: translateY(-10px); border-color: var(--grass); }
+        .step-card .display-1 { color: var(--grass); font-size: 3rem; font-weight: 800; }
         
         .neon-form {
             background: white;
@@ -284,7 +292,7 @@
             transition: 0.3s;
         }
         textarea { border-radius: 32px; resize: vertical; }
-        input:focus, textarea:focus { outline: none; border-color: #9e8a7f; }
+        input:focus, textarea:focus { outline: none; border-color: var(--grass); }
         
         .review-card {
             background: white;
@@ -293,6 +301,8 @@
             border: 1px solid #dedede;
             height: 100%;
         }
+        .review-card i.fa-star { color: var(--grass); }
+        
         .faq-glow {
             background: white;
             border-radius: 28px;
@@ -320,10 +330,10 @@
             font-size: 26px;
             border: 1px solid #dedede;
             transition: 0.3s;
-            color: #9e8a7f;
+            color: var(--grass);
             text-decoration: none;
         }
-        .glass-btn:hover { transform: scale(1.1); background: #9e8a7f; color: white; }
+        .glass-btn:hover { transform: scale(1.1); background: var(--grass); color: white; }
         
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.8rem; }
@@ -337,6 +347,8 @@
             text-align: center;
             background: #fcfcfc;
         }
+        footer i { color: var(--grass); }
+        
         .section-title {
             font-size: 3rem;
             font-weight: 700;
@@ -350,7 +362,7 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: #9e8a7f;
+            background: var(--grass);
             color: white;
             padding: 16px 32px;
             border-radius: 60px;
@@ -363,7 +375,7 @@
         }
         .toast-notification.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         
-        /* Стили для новых блоков */
+        /* Стили для блоков */
         .price-table {
             background: white;
             border-radius: 32px;
@@ -380,10 +392,10 @@
         }
         .price-row:last-child { border-bottom: none; }
         .price-name { font-weight: 600; color: #414141; }
-        .price-value { font-weight: 700; color: #9e8a7f; font-size: 1.2rem; }
+        .price-value { font-weight: 700; color: var(--grass); font-size: 1.2rem; }
         .price-star {
             font-size: 0.85rem;
-            color: #9e8a7f;
+            color: var(--grass);
             text-align: right;
             font-style: italic;
         }
@@ -415,10 +427,11 @@
             padding: 0.5rem 1.8rem;
             border-radius: 60px;
         }
-        .footnote-star { color: #9e8a7f; font-weight: bold; font-size: 1.2rem; }
+        .map-address i { color: var(--grass); }
+        .footnote-star { color: var(--grass); font-weight: bold; font-size: 1.2rem; }
         .footnote-text {
             font-size: 0.75rem;
-            color: #9e8a7f;
+            color: var(--grass);
             margin-top: 4px;
             font-style: italic;
         }
@@ -427,6 +440,13 @@
             .price-row { font-size: 1rem; flex-wrap: wrap; gap: 6px; }
             .price-value { font-size: 1rem; }
             .req-card { font-size: 0.85rem; }
+        }
+        
+        /* Фикс для курсора на мобильных */
+        @media (max-width: 1023px) {
+            .custom-cursor, .cursor-dot {
+                display: none !important;
+            }
         }
     </style>
 </head>
