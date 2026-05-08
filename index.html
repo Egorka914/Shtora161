@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    
+    <!-- SEO метатеги для поисковых систем -->
+    <title>Пошив штор на заказ в Батайске | Velvet & Grace</title>
+    <meta name="description" content="Пошив штор, портьер, тюля и римских штор на заказ в Батайске. Бесплатный замер дизайнера, установка карнизов. Цены от 350 ₽/п.м. ☎ +7 (960) 448-20-00">
+    <meta name="keywords" content="пошив штор, шторы на заказ, римские шторы, портьеры, тюль, карнизы, Батайск, Ростов-на-Дону">
+    <meta name="author" content="Velvet & Grace">
+    <meta name="robots" content="index, follow">
+    <meta name="yandex-verification" content="">
+    <link rel="canonical" href="https://velvetgrace.ru">
+    
+    <!-- Open Graph для соцсетей -->
+    <meta property="og:title" content="Пошив штор на заказ в Батайске | Velvet & Grace">
+    <meta property="og:description" content="Премиальные шторы на заказ под ключ. Бесплатный выезд дизайнера, индивидуальный пошив, установка карнизов.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://velvetgrace.ru">
+    <meta property="og:image" content="https://placehold.co/1200x630/9e8a7f/FFFFFF?text=Velvet+%26+Grace">
+    
+    <!-- Bootstrap 5 + Icons + Google Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <!-- EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #fcfcfc;
+            color: #414141;
+            overflow-x: hidden;
+        }
+        
+        /* Анимация открытия штор */
+        .curtain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            display: flex;
+            pointer-events: none;
+        }
+        .curtain-panel {
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, #2a241e 0%, #1a1510 100%);
+            position: relative;
+            overflow: hidden;
+            transition: transform 1.8s cubic-bezier(0.77, 0, 0.18, 1);
+            z-index: 10001;
+        }
+        .curtain-panel.left { transform: translateX(0); }
+        .curtain-panel.right { transform: translateX(0); }
+        .curtain-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(90deg, rgba(158,138,127,0.1) 0px, rgba(158,138,127,0.1) 2px, transparent 2px, transparent 8px);
+            pointer-events: none;
+        }
+        .curtain-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #9e8a7f;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .curtain-panel.left .curtain-text { transform: translate(-50%, -50%) rotate(-90deg); }
+        .curtain-panel.right .curtain-text { transform: translate(-50%, -50%) rotate(90deg); }
+        
+        /* Кастомный курсор (только для десктопа) */
+        @media (min-width: 1024px) {
+            .custom-cursor {
+                width: 28px;
+                height: 28px;
+                border: 2px solid #9e8a7f;
+                border-radius: 50%;
+                position: fixed;
+                pointer-events: none;
+                z-index: 99999;
+                transform: translate(-50%, -50%);
+                transition: width 0.2s ease, height 0.2s ease, background 0.2s ease;
+                background: rgba(158, 138, 127, 0.1);
+                box-shadow: 0 0 12px rgba(158, 138, 127, 0.4);
+                will-change: transform;
+            }
+            .cursor-dot {
+                width: 4px;
+                height: 4px;
+                background: #9e8a7f;
+                border-radius: 50%;
+                position: fixed;
+                pointer-events: none;
+                z-index: 99999;
+                transform: translate(-50%, -50%);
+                will-change: transform;
+            }
+            body, a, button, .btn, .card-flip, .swiper-slide, .faq-q, .glass-btn { cursor: none; }
+        }
+        
+        /* Flip карточки */
+        .flip-container {
+            background-color: transparent;
+            width: 100%;
+            height: 420px;
+            perspective: 1000px;
+        }
+        .card-flip {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transform-style: preserve-3d;
+            border-radius: 32px;
+        }
+        .flip-container:hover .card-flip { transform: rotateY(180deg); }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 32px;
+            overflow: hidden;
+        }
+        .card-front {
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .card-front .front-overlay {
+            background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+            width: 100%;
+            padding: 30px 20px 20px;
+            color: white;
+        }
+        .card-front h3 { color: white; margin-bottom: 8px; }
+        .card-back {
+            background: #9e8a7f;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 32px;
+            text-align: center;
+        }
+        .card-back h4 { color: white; margin-bottom: 16px; }
+        .card-back p { color: #f5f0eb; margin-bottom: 20px; }
+        .btn-detail {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.5);
+            padding: 8px 24px;
+            border-radius: 40px;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-block;
+        }
+        .btn-detail:hover { background: white; color: #9e8a7f; }
+        
+        .premium-card {
+            background: white;
+            border: 1px solid #dedede;
+            border-radius: 32px;
+            padding: 40px 28px;
+            transition: all 0.5s;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .premium-card:hover {
+            transform: translateY(-15px);
+            border-color: #9e8a7f;
+            box-shadow: 0 25px 45px -12px rgba(158,138,127,0.3);
+        }
+        .premium-card i { font-size: 3rem; color: #9e8a7f; margin-bottom: 20px; }
+        .premium-card h3 { color: black; margin-bottom: 12px; }
+        .stat-number { font-size: 2.5rem; font-weight: 800; color: #9e8a7f; margin-top: 16px; }
+        
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 9990;
+            padding: 1.2rem 0;
+            transition: 0.4s;
+            background: transparent;
+        }
+        .navbar.scrolled {
+            background: rgba(252,252,252,0.98);
+            backdrop-filter: blur(12px);
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #dedede;
+        }
+        .navbar-brand { font-size: 1.6rem; font-weight: 700; color: black; }
+        .navbar-brand span { color: #9e8a7f; }
+        .nav-link { color: #414141; font-weight: 500; margin: 0 0.5rem; position: relative; }
+        .nav-link:hover { color: #9e8a7f; }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #9e8a7f;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after { width: 100%; }
+        
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fcfcfc 0%, #f5f2ef 100%);
+            padding-top: 80px;
+            display: flex;
+            align-items: center;
+        }
+        .hero h1 { font-size: 5.5rem; font-weight: 800; color: black; }
+        .gold-text { color: #9e8a7f; }
+        .btn-cyber {
+            background: #414141;
+            border: none;
+            padding: 16px 48px;
+            font-weight: 600;
+            border-radius: 60px;
+            color: white;
+            transition: 0.4s;
+        }
+        .btn-cyber:hover { transform: scale(1.05); background: #9e8a7f; }
+        
+        .swiper { width: 100%; padding: 50px 0 70px; }
+        .swiper-slide { width: 320px; height: 450px; border-radius: 32px; overflow: hidden; border: 1px solid #dedede; }
+        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .swiper-slide-active { transform: scale(1.05); border-color: #9e8a7f; }
+        
+        .step-card {
+            background: white;
+            border-radius: 28px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid #dedede;
+            transition: 0.4s;
+            height: 100%;
+        }
+        .step-card:hover { transform: translateY(-10px); border-color: #9e8a7f; }
+        .step-card .display-1 { color: #9e8a7f; font-size: 3rem; font-weight: 800; }
+        
+        .neon-form {
+            background: white;
+            border-radius: 48px;
+            border: 1px solid #dedede;
+            padding: 50px;
+        }
+        input, textarea {
+            background: #fcfcfc;
+            border: 1px solid #dedede;
+            border-radius: 60px;
+            padding: 15px 25px;
+            color: #414141;
+            width: 100%;
+            transition: 0.3s;
+        }
+        textarea { border-radius: 32px; resize: vertical; }
+        input:focus, textarea:focus { outline: none; border-color: #9e8a7f; }
+        
+        .review-card {
+            background: white;
+            padding: 32px;
+            border-radius: 32px;
+            border: 1px solid #dedede;
+            height: 100%;
+        }
+        .faq-glow {
+            background: white;
+            border-radius: 28px;
+            margin-bottom: 20px;
+            border: 1px solid #dedede;
+            overflow: hidden;
+        }
+        .floating-menu {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .glass-btn {
+            background: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            border: 1px solid #dedede;
+            transition: 0.3s;
+            color: #9e8a7f;
+            text-decoration: none;
+        }
+        .glass-btn:hover { transform: scale(1.1); background: #9e8a7f; color: white; }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .neon-form { padding: 30px; }
+            .flip-container { height: 380px; }
+        }
+        
+        footer {
+            border-top: 1px solid #dedede;
+            padding: 40px 0;
+            text-align: center;
+            background: #fcfcfc;
+        }
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 50px;
+            color: black;
+        }
+        @media (max-width: 576px) { .section-title { font-size: 2rem; } }
+        
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #9e8a7f;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 60px;
+            z-index: 10001;
+            opacity: 0;
+            transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            pointer-events: none;
+            font-weight: 500;
+        }
+        .toast-notification.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        
+        /* Стили для новых блоков */
+        .price-table {
+            background: white;
+            border-radius: 32px;
+            padding: 1.5rem;
+            border: 1px solid #dedede;
+        }
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 1rem 0;
+            border-bottom: 1px dashed #e0d6cf;
+            font-size: 1.1rem;
+        }
+        .price-row:last-child { border-bottom: none; }
+        .price-name { font-weight: 600; color: #414141; }
+        .price-value { font-weight: 700; color: #9e8a7f; font-size: 1.2rem; }
+        .price-star {
+            font-size: 0.85rem;
+            color: #9e8a7f;
+            text-align: right;
+            font-style: italic;
+        }
+        .req-card {
+            background: white;
+            border-radius: 32px;
+            padding: 1.8rem;
+            border: 1px solid #dedede;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #414141;
+        }
+        .req-card p { margin-bottom: 0.5rem; }
+        .map-wrapper {
+            background: white;
+            border-radius: 48px;
+            padding: 2rem 1.5rem 1.8rem 1.5rem;
+            border: 1px solid #dedede;
+        }
+        .map-container { border-radius: 32px; overflow: hidden; }
+        .map-address {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #414141;
+            background: #f9f6f2;
+            display: inline-block;
+            width: auto;
+            margin: 0 auto;
+            padding: 0.5rem 1.8rem;
+            border-radius: 60px;
+        }
+        .footnote-star { color: #9e8a7f; font-weight: bold; font-size: 1.2rem; }
+        .footnote-text {
+            font-size: 0.75rem;
+            color: #9e8a7f;
+            margin-top: 4px;
+            font-style: italic;
+        }
+        .bg-soft { background-color: #f9f6f2; }
+        @media (max-width: 768px) {
+            .price-row { font-size: 1rem; flex-wrap: wrap; gap: 6px; }
+            .price-value { font-size: 1rem; }
+            .req-card { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Анимация открытия штор -->
+<div class="curtain-overlay" id="curtainOverlay">
+    <div class="curtain-panel left" id="curtainLeft"><div class="curtain-text">VELVET & GRACE</div></div>
+    <div class="curtain-panel right" id="curtainRight"><div class="curtain-text">EST. 2026</div></div>
+</div>
+
+<div class="custom-cursor"></div>
+<div class="cursor-dot"></div>
+
+<nav class="navbar navbar-expand-lg" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand" href="#home">Velvet<span>& Grace</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <i class="fas fa-bars" style="color: #9e8a7f;"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#home">Главная</a></li>
+                <li class="nav-item"><a class="nav-link" href="#advantages">Преимущества</a></li>
+                <li class="nav-item"><a class="nav-link" href="#services">Услуги</a></li>
+                <li class="nav-item"><a class="nav-link" href="#portfolio">Портфолио</a></li>
+                <li class="nav-item"><a class="nav-link" href="#price-block">Цены</a></li>
+                <li class="nav-item"><a class="nav-link" href="#steps">Как работаем</a></li>
+                <li class="nav-item"><a class="nav-link" href="#form">Заявка</a></li>
+                <li class="nav-item"><a class="nav-link" href="#reviews">Отзывы</a></li>
+                <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+                <li class="nav-item"><a class="nav-link" href="#map">Контакты</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section class="hero d-flex align-items-center" id="home">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7">
+                <h1 class="mb-4">Пошив штор на заказ<br><span class="gold-text">под ключ в Батайске</span></h1>
+                <p class="fs-4 mb-4">Бесплатный выезд дизайнера с образцами • Индивидуальный пошив • Установка карнизов</p>
+                <button class="btn-cyber" id="ctaMainBtn">✨ Оставить заявку ✨</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" id="advantages">
+    <div class="container">
+        <h2 class="section-title text-center">Наши преимущества</h2>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4"><div class="premium-card"><i class="fas fa-ruler-combined"></i><h3>Бесплатный замер</h3><p>Дизайнер приедет с образцами</p><div class="stat-number" data-target="100">0</div><p>% точности</p></div></div>
+            <div class="col-md-6 col-lg-4"><div class="premium-card"><i class="fas fa-gem"></i><h3>Премиум ткани</h3><p>Итальянские, турецкие бренды</p><div class="stat-number" data-target="250">0</div><p>коллекций</p></div></div>
+            <div class="col-md-6 col-lg-4"><div class="premium-card"><i class="fas fa-clock"></i><h3>Срок 7–14 дней</h3><p>Срочный пошив без потери качества</p><div class="stat-number" data-target="99">0</div><p>% вовремя</p></div></div>
+            <div class="col-md-6 col-lg-4"><div class="premium-card"><i class="fas fa-hand-sparkles"></i><h3>Установка карнизов</h3><p>Полный монтаж под ключ</p><div class="stat-number" data-target="5000">0</div><p>+ проектов</p></div></div>
+            <div class="col-md-6 col-lg-4"><div class="premium-card"><i class="fas fa-tags"></i><h3>Цена фикс</h3><p>Без скрытых наценок</p><div class="stat-number" data-target="15">0</div><p>лет опыта</p></div></div>
+            <div class="col-md-6 col-lg-4"><div class="premium-card"><i class="fas fa-couch"></i><h3>Декор интерьера</h3><p>Подушки, покрывала — единый стиль</p><div class="stat-number" data-target="1200">0</div><p>довольных клиентов</p></div></div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-soft" id="services">
+    <div class="container">
+        <h2 class="section-title text-center">Наши услуги</h2>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4"><div class="flip-container"><div class="card-flip"><div class="card-front" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.2)), url('foto/61b9699a-bf54-480e-b225-d16ae7d0c1c0.jpg?text=Классические+шторы');"><div class="front-overlay"><h3>Классические шторы</h3><p>Портьеры, ламбрекены</p></div></div><div class="card-back"><i class="fas fa-feather-alt" style="font-size: 2.5rem; margin-bottom: 16px;"></i><h4>Элегантность вне времени</h4><p>Изысканные драпировки, ручная работа</p><a href="#form" class="btn-detail">Узнать подробнее →</a></div></div></div></div>
+            <div class="col-md-6 col-lg-4"><div class="flip-container"><div class="card-flip"><div class="card-front" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.2)), url('foto/b85576b0-70a1-4deb-9637-0acd3706d24f.jpg?text=Рулонные+шторы');"><div class="front-overlay"><h3>Рулонные шторы</h3><p>День-ночь, блэкаут</p></div></div><div class="card-back"><i class="fas fa-sun" style="font-size: 2.5rem; margin-bottom: 16px;"></i><h4>Современный минимализм</h4><p>Компактные, функциональные</p><a href="#form" class="btn-detail">Узнать подробнее →</a></div></div></div></div>
+            <div class="col-md-6 col-lg-4"><div class="flip-container"><div class="card-flip"><div class="card-front" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.2)), url('foto/b85576b0-70a1-4deb-9637-0acd3706d24f.jpg?text=Жалюзи');"><div class="front-overlay"><h3>Жалюзи</h3><p>Горизонтальные, вертикальные</p></div></div><div class="card-back"><i class="fas fa-sliders-h" style="font-size: 2.5rem; margin-bottom: 16px;"></i><h4>Практичность и стиль</h4><p>Регулировка света, легкость в уходе</p><a href="#form" class="btn-detail">Узнать подробнее →</a></div></div></div></div>
+            <div class="col-md-6 col-lg-4"><div class="flip-container"><div class="card-flip"><div class="card-front" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.2)), url('foto/b85576b0-70a1-4deb-9637-0acd3706d24f.jpg?text=Дизайн+текстиля');"><div class="front-overlay"><h3>Дизайн текстиля</h3><p>Авторские решения</p></div></div><div class="card-back"><i class="fas fa-drafting-compass" style="font-size: 2.5rem; margin-bottom: 16px;"></i><h4>Индивидуальный подход</h4><p>Уникальный дизайн под ваш интерьер</p><a href="#form" class="btn-detail">Узнать подробнее →</a></div></div></div></div>
+            <div class="col-md-6 col-lg-4"><div class="flip-container"><div class="card-flip"><div class="card-front" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.2)), url('foto/b85576b0-70a1-4deb-9637-0acd3706d24f.jpg?text=Подушки+покрывала');"><div class="front-overlay"><h3>Подушки & покрывала</h3><p>Декор из тех же тканей</p></div></div><div class="card-back"><i class="fas fa-home" style="font-size: 2.5rem; margin-bottom: 16px;"></i><h4>Целостный образ</h4><p>Стильный текстиль в единой концепции</p><a href="#form" class="btn-detail">Узнать подробнее →</a></div></div></div></div>
+            <div class="col-md-6 col-lg-4"><div class="flip-container"><div class="card-flip"><div class="card-front" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.2)), url('foto/b85576b0-70a1-4deb-9637-0acd3706d24f.jpg?text=Монтаж+карнизов');"><div class="front-overlay"><h3>Монтаж карнизов</h3><p>Скрытые системы</p></div></div><div class="card-back"><i class="fas fa-wrench" style="font-size: 2.5rem; margin-bottom: 16px;"></i><h4>Профессиональная установка</h4><p>Аккуратный монтаж, гарантия качества</p><a href="#form" class="btn-detail">Узнать подробнее →</a></div></div></div></div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" id="portfolio">
+    <div class="container">
+        <h2 class="section-title text-center">Наши работы</h2>
+        <div class="swiper portfolioSwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="foto/14ee514b-42ca-409b-b81b-9d3a89f9adaa.jpg" alt="Классические шторы портьеры"></div>
+                <div class="swiper-slide"><img src="foto/16354d5c-d0b6-4f25-9374-af4af1ef2115.jpg" alt="Римские шторы на заказ"></div>
+                <div class="swiper-slide"><img src="foto/45533f8a-5eb7-472f-bc93-a339f2078687.jpg" alt="Тюль и портьеры"></div>
+                <div class="swiper-slide"><img src="foto/49d2ce0b-cbf2-4f63-b382-0c64a443c713.jpg" alt="Жалюзи горизонтальные"></div>
+                <div class="swiper-slide"><img src="foto/54b47d18-78b4-43cb-a66c-cfc6a4724f54.jpg" alt="Рулонные шторы день-ночь"></div>
+                <div class="swiper-slide"><img src="foto/5bafc915-7b7c-443b-b905-9f9feeb41cf2.jpg" alt="Шторы в гостиную"></div>
+                   <div class="swiper-slide"><img src="foto/b85576b0-70a1-4deb-9637-0acd3706d24f.jpg" alt="Шторы в гостиную"></div>
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
+<!-- БЛОК ПРАЙС -->
+<section class="py-5" id="price-block">
+    <div class="container">
+        <h2 class="section-title text-center">Стоимость пошива</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="price-table">
+                    <div class="price-row"><span class="price-name">🇪🇺 Римские шторы</span><span class="price-value">от 1 200 ₽ / м²</span></div>
+                    <div class="price-row"><span class="price-name">🏛️ Пошив портьер</span><span class="price-value">от 600 ₽ / п.м</span></div>
+                    <div class="price-row"><span class="price-name">☁️ Пошив тюля</span><span class="price-value">от 350 ₽ / п.м</span></div>
+                    <div class="price-row"><span class="price-name">🎨 Карнизы (установка)</span><span class="price-value">от 450 ₽ / ед.</span></div>
+                </div>
+                <p class="price-star mt-3 text-center">* стоимость указана при заказе пошива штор</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-soft" id="steps">
+    <div class="container">
+        <h2 class="section-title text-center">Этапы работы</h2>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg"><div class="step-card"><div class="display-1">01</div><h4>Заявка</h4><p>Оставьте заявку на сайте</p></div></div>
+            <div class="col-md-6 col-lg"><div class="step-card"><div class="display-1">02</div><h4>Замер и образцы</h4><p>Бесплатный выезд дизайнера</p></div></div>
+            <div class="col-md-6 col-lg"><div class="step-card"><div class="display-1">03</div><h4>Дизайн-проект</h4><p>Подбор тканей, эскиз</p></div></div>
+            <div class="col-md-6 col-lg"><div class="step-card"><div class="display-1">04</div><h4>Пошив</h4><p>7–14 дней<span class="footnote-star">*</span>, фотоотчет</p><p class="footnote-text">* дни исчисляются после получения ткани от поставщика</p></div></div>
+            <div class="col-md-6 col-lg"><div class="step-card"><div class="display-1">05</div><h4>Монтаж под ключ</h4><p>Установка карнизов и штор</p></div></div>
+        </div>
+    </div>
+</section>
+
+<section id="form" class="py-5">
+    <div class="container">
+        <div class="neon-form">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2 class="section-title" style="font-size: 2rem;">Создайте уют с нами</h2>
+                    <p><i class="fas fa-check-circle" style="color: #9e8a7f; margin-right: 8px;"></i> Бесплатный выезд дизайнера</p>
+                    <p><i class="fas fa-check-circle" style="color: #9e8a7f; margin-right: 8px;"></i> Индивидуальный дизайн-проект в подарок</p>
+                    <p><i class="fas fa-check-circle" style="color: #9e8a7f; margin-right: 8px;"></i> 3D визуализация будущего интерьера</p>
+                </div>
+                <div class="col-lg-6">
+                    <form id="contactForm">
+                        <input type="text" placeholder="Ваше имя" id="userName" class="mb-3" required>
+                        <input type="tel" placeholder="+7 (___) ___-__-__" id="userPhone" class="mb-3" required>
+                        <textarea rows="3" placeholder="Комментарий (тип штор, цвет, пожелания)" id="userMessage" class="mb-4"></textarea>
+                        <button type="submit" class="btn-cyber w-100" id="submitBtn">📩 Отправить заявку</button>
+                        <p class="small text-center mt-3" style="color: #67605b;">Нажимая на кнопку, вы соглашаетесь с политикой конфиденциальности</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="toast-notification" id="toastMsg">✓ Заявка отправлена! Я перезвоню вам в ближайшее время.</div>
+
+<section class="py-5 bg-soft" id="reviews">
+    <div class="container">
+        <h2 class="section-title text-center">Отзывы клиентов</h2>
+        <div class="row g-4">
+            <div class="col-md-4"><div class="review-card"><i class="fas fa-star" style="color: #9e8a7f;"></i><i class="fas fa-star" style="color: #9e8a7f;"></i><i class="fas fa-star" style="color: #9e8a7f;"></i><i class="fas fa-star" style="color: #9e8a7f;"></i><i class="fas fa-star" style="color: #9e8a7f;"></i><p class="mt-3">«Заказывали гостиную и спальню. Дизайнер подобрала идеальные ткани, шторы сшили за 10 дней. Монтаж аккуратный.»</p><p class="fw-bold mt-3">— Екатерина С.</p></div></div>
+            <div class="col-md-4"><div class="review-card"><i class="fas fa-star" style="color: #9e8a7f;"></i><i class="fas fa-star" style="color: #9e8a7f;"></i><i class="fas fa-star" style="color: #9e8a7f;"></i><i class="fas fa-star" style="color: #9e8a7f;"></i><i class="fas fa-star" style="color: #9e8a7f;"></i><p class="mt-3">«Рулонные шторы на кухню и жалюзи в кабинет — качество отличное. Бесплатный замер очень удобен.»</p><p class="fw-bold mt-3">— Андрей М.</p></div></div>
+            <div class="col-md-4"><div class="review-card"><i class="fas fa-star" style="color: #9e8a7f;"></i><i class="fas fa-star" style="color: #9e8a7f;"></i><i class="fas fa-star" style="color: #9e8a7f;"></i><i class="fas fa-star" style="color: #9e8a7f;"></i><i class="fas fa-star" style="color: #9e8a7f;"></i><p class="mt-3">«Заказывали полный пакет: шторы, карнизы, покрывало. Получилось как в люксовом отеле.»</p><p class="fw-bold mt-3">— Ольга и Дмитрий</p></div></div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container text-center">
+        <h2 class="section-title">О компании</h2>
+        <p class="fs-5 mx-auto" style="max-width: 800px;">Более 8 лет создаем идеальный текстиль для интерьеров. Работаем с элитными тканями, предлагаем полный цикл: от дизайн-проекта до установки карнизов. Каждый заказ сопровождается персональным стилистом. Бесплатный выезд на замер по всему городу.</p>
+    </div>
+</section>
+
+<section class="py-5 bg-soft" id="faq">
+    <div class="container">
+        <h2 class="section-title text-center">Часто задаваемые вопросы</h2>
+        <div id="faqContainer">
+            <div class="faq-glow"><div class="faq-q p-3 d-flex justify-content-between align-items-center fw-bold" style="cursor: pointer;">Сколько времени занимает пошив?<i class="fas fa-chevron-down" style="color: #9e8a7f;"></i></div><div class="faq-a px-3 pb-3" style="display: none;">Обычно от 7 до 14 дней. Срочные заказы выполняем за 5 дней.</div></div>
+            <div class="faq-glow"><div class="faq-q p-3 d-flex justify-content-between align-items-center fw-bold" style="cursor: pointer;">Выезд дизайнера действительно бесплатный?<i class="fas fa-chevron-down" style="color: #9e8a7f;"></i></div><div class="faq-a px-3 pb-3" style="display: none;">Да, при заказе пошива — бесплатный замер и консультация с образцами.</div></div>
+            <div class="faq-glow"><div class="faq-q p-3 d-flex justify-content-between align-items-center fw-bold" style="cursor: pointer;">Предоставляете гарантию?<i class="fas fa-chevron-down" style="color: #9e8a7f;"></i></div><div class="faq-a px-3 pb-3" style="display: none;">Гарантия на пошив и установку — 2 года. На карнизы — до 5 лет.</div></div>
+            <div class="faq-glow"><div class="faq-q p-3 d-flex justify-content-between align-items-center fw-bold" style="cursor: pointer;">Какие ткани используете?<i class="fas fa-chevron-down" style="color: #9e8a7f;"></i></div><div class="faq-a px-3 pb-3" style="display: none;">Лен, бархат, жаккард, блэкаут, итальянский шелк, премиум-бренды.</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- МИНИ-КАРТА -->
+<section class="pb-5" id="map">
+    <div class="container">
+        <div class="map-wrapper">
+            <h2 class="section-title text-center" style="font-size: 2rem;">Мы здесь</h2>
+            <div class="map-container">
+                <iframe 
+                    src="https://yandex.ru/map-widget/v1/?ll=39.747918,47.113061&z=17&pt=39.747918,47.113061,pm2rdm&size=500,400"
+                    width="100%" 
+                    height="350" 
+                    frameborder="0"
+                    allowfullscreen="true"
+                    style="border-radius: 32px; border: 1px solid #dedede;">
+                </iframe>
+            </div>
+            <p class="map-address text-center mt-3">
+                <i class="fas fa-map-marker-alt" style="color: #9e8a7f;"></i> 
+                Г. Батайск, ул. Ленина, 219Б
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- РЕКВИЗИТЫ -->
+<section class="py-4">
+    <div class="container">
+        <div class="req-card" style="max-width: 600px; margin: 0 auto;">
+            <p class="text-center fw-bold mb-3">Реквизиты ИП</p>
+            <p><strong>ИП Пономарева Юлия Александровна</strong></p>
+            <p>ИНН: 614312765573</p>
+            <p>р/с: 40802810226400001425</p>
+            <p>Банк: ФИЛИАЛ "РОСТОВСКИЙ" АО "АЛЬФА-БАНК"</p>
+            <p>БИК: 046015207</p>
+            <p>к/с: 30101810500000000207</p>
+            <p class="mt-2 small">📍 Адрес: Ростовская область, г. Батайск, ул. 16-я Линия, д. 1375</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="row justify-content-between mb-4">
+            <div class="col-md-3 mb-2"><i class="fas fa-map-pin" style="color: #9e8a7f; margin-right: 8px;"></i> Г. Батайск, ул. Ленина, 219Б</div>
+            <div class="col-md-3 mb-2"><i class="fas fa-phone-alt" style="color: #9e8a7f; margin-right: 8px;"></i> +7 (960) 448-20-00</div>
+            <div class="col-md-3 mb-2"><i class="fas fa-envelope" style="color: #9e8a7f; margin-right: 8px;"></i> hello@velvetgrace.ru</div>   
+        </div>
+        <hr style="border-color: #dedede;">
+        <p class="mt-4" style="color: #67605b;">© 2026 Velvet & Grace — пошив штор на заказ в Батайске</p>
+    </div>
+</footer>
+
+<div class="floating-menu">
+    <a href="tel:+79604482000" class="glass-btn"><i class="fas fa-phone-alt"></i></a>
+    <a href="#" class="glass-btn" id="copyPhoneBtn"><i class="fas fa-copy"></i></a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ========== EMAILJS НАСТРОЙКА ==========
+const EMAILJS_CONFIG = {
+    PUBLIC_KEY: "ВАШ_PUBLIC_KEY",
+    SERVICE_ID: "service_ваш_id",
+    TEMPLATE_ID: "template_ваш_id"
+};
+
+if(EMAILJS_CONFIG.PUBLIC_KEY !== "ВАШ_PUBLIC_KEY") {
+    emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+}
+
+// Маска телефона
+const phoneInput = document.getElementById('userPhone');
+if(phoneInput) {
+    phoneInput.addEventListener('input', function(e) {
+        let x = this.value.replace(/\D/g, '').substring(0, 11);
+        let formatted = '+7 ';
+        if(x.length > 1) formatted += '(' + x.substring(1, 4);
+        if(x.length >= 5) formatted += ') ' + x.substring(4, 7);
+        if(x.length >= 8) formatted += '-' + x.substring(7, 9);
+        if(x.length >= 10) formatted += '-' + x.substring(9, 11);
+        this.value = formatted;
+    });
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toastMsg');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+const form = document.getElementById('contactForm');
+const submitBtn = document.getElementById('submitBtn');
+
+if(form) {
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const name = document.getElementById('userName').value.trim();
+        const phone = document.getElementById('userPhone').value.trim();
+        const message = document.getElementById('userMessage').value.trim();
+        
+        if(!name || !phone) {
+            showToast('❌ Пожалуйста, заполните имя и телефон');
+            return;
+        }
+        
+        submitBtn.disabled = true;
+        submitBtn.textContent = '⏳ Отправка...';
+        
+        const templateParams = {
+            to_email: 'samo.remont.pk@mail.ru',
+            user_name: name,
+            user_phone: phone,
+            user_message: message || 'Без комментария',
+            site_name: 'Velvet & Grace - Шторы на заказ'
+        };
+        
+        try {
+            const response = await emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ID, templateParams);
+            console.log('Email отправлен:', response);
+            showToast('✅ Заявка отправлена! Я перезвоню вам в ближайшее время.');
+            form.reset();
+            if(phoneInput) phoneInput.value = '+7 ';
+        } catch(error) {
+            console.error('Ошибка:', error);
+            showToast('❌ Ошибка отправки. Попробуйте позже или позвоните по телефону.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '📩 Отправить заявку';
+        }
+    });
+}
+
+// Копирование номера
+document.getElementById('copyPhoneBtn')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    navigator.clipboard.writeText('+7 (960) 448-20-00');
+    showToast('📋 Номер телефона скопирован!');
+});
+
+// Анимация открытия штор
+setTimeout(() => {
+    const leftPanel = document.getElementById('curtainLeft');
+    const rightPanel = document.getElementById('curtainRight');
+    const overlay = document.getElementById('curtainOverlay');
+    if(leftPanel && rightPanel) {
+        leftPanel.style.transform = 'translateX(-100%)';
+        rightPanel.style.transform = 'translateX(100%)';
+        setTimeout(() => { if(overlay) overlay.style.display = 'none'; }, 1900);
+    }
+}, 500);
+
+// Курсор (только для десктопа)
+if(window.innerWidth >= 1024) {
+    const cursor = document.querySelector('.custom-cursor');
+    const cursorDot = document.querySelector('.cursor-dot');
+    if(cursor && cursorDot) {
+        let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0, dotX = 0, dotY = 0;
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
+            dotX += (mouseX - dotX) * 0.3;
+            dotY += (mouseY - dotY) * 0.3;
+            cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+            cursorDot.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+        
+        const clickables = document.querySelectorAll('a, button, .btn, .card-flip, .swiper-slide, .faq-q, .glass-btn');
+        clickables.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.width = '48px';
+                cursor.style.height = '48px';
+                cursor.style.backgroundColor = 'rgba(158,138,127,0.2)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.width = '28px';
+                cursor.style.height = '28px';
+                cursor.style.backgroundColor = 'rgba(158,138,127,0.1)';
+            });
+        });
+    }
+}
+
+// Навигация
+const navbar = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+    if(window.scrollY > 50) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
+});
+
+document.querySelectorAll('.nav-link, #ctaMainBtn, .btn-detail').forEach(link => {
+    link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if(href && href.startsWith('#')) {
+            e.preventDefault();
+            const targetId = href.substring(1);
+            const target = document.getElementById(targetId);
+            if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+
+// Swiper
+if(typeof Swiper !== 'undefined') {
+    new Swiper('.portfolioSwiper', {
+        effect: 'coverflow', grabCursor: true, centeredSlides: true, slidesPerView: 'auto',
+        coverflowEffect: { rotate: 50, stretch: 0, depth: 100, modifier: 1, slideShadows: true },
+        loop: true, navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        pagination: { el: '.swiper-pagination', clickable: true },
+        breakpoints: { 320: { slidesPerView: 1 }, 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }
+    });
+}
+
+// Счетчики
+const counters = document.querySelectorAll('.stat-number');
+const animateCounter = (el) => {
+    const target = parseInt(el.getAttribute('data-target'));
+    let current = 0;
+    const increment = target / 50;
+    const update = () => {
+        current += increment;
+        if(current < target) { el.innerText = Math.floor(current); requestAnimationFrame(update); }
+        else el.innerText = target;
+    };
+    update();
+};
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) { animateCounter(e.target); observer.unobserve(e.target); } });
+}, { threshold: 0.5 });
+counters.forEach(c => observer.observe(c));
+
+// GSAP анимации
+if(typeof gsap !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.utils.toArray(".premium-card, .flip-container, .step-card, .review-card, .faq-glow").forEach(el => {
+        gsap.from(el, { scrollTrigger: { trigger: el, start: "top 85%", once: true }, opacity: 0, y: 70, duration: 0.7, ease: "power3.out" });
+    });
+    gsap.from(".hero h1", { duration: 1.2, y: 150, opacity: 0, ease: "back.out(1.2)" });
+    gsap.from(".hero p", { duration: 1, x: -80, opacity: 0, delay: 0.4 });
+    gsap.from("#ctaMainBtn", { duration: 0.8, scale: 0, opacity: 0, delay: 0.7, ease: "elastic.out(1,0.5)" });
+}
+
+// Аккордеон FAQ
+document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+        const answer = q.parentElement.querySelector('.faq-a');
+        const icon = q.querySelector('i');
+        if(answer.style.display === 'none' || !answer.style.display) {
+            answer.style.display = 'block';
+            if(icon) icon.style.transform = 'rotate(180deg)';
+        } else {
+            answer.style.display = 'none';
+            if(icon) icon.style.transform = 'rotate(0deg)';
+        }
+    });
+    const answer = q.parentElement.querySelector('.faq-a');
+    if(answer) answer.style.display = 'none';
+});
+
+console.log('%c📧 Для получения заявок на почту настройте EmailJS\n1. Зарегистрируйтесь на https://www.emailjs.com/\n2. Добавьте сервис Mail.ru\n3. Создайте шаблон и скопируйте ключи в EMAILJS_CONFIG', 'color: #9e8a7f');
+</script>
+
+</body>
+</html>
